@@ -198,15 +198,21 @@
                 <div className={`min-h-screen flex items-center justify-center relative overflow-hidden ${theme.bg}`}>
                     <div className="absolute inset-0 z-0 bg-cover bg-center" style={{ backgroundImage: `url(${settings.loginBg || 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2000'})`, filter: 'sepia(0.2) contrast(1.1) brightness(0.5)' }}></div>
                     <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row m-4 animate-fade-in">
-                        <div className={`md:w-1/2 h-48 md:h-auto bg-cover bg-center flex flex-col items-center justify-center p-8 bg-gradient-to-t ${theme.gradient}`}>
-                            {settings.loginCardImage && (
-                                <img src={settings.loginCardImage} alt="Login Illustration" className="w-32 h-32 md:w-48 md:h-48 object-contain mb-6 drop-shadow-2xl" />
-                            )}
-                            <div className="text-white text-center">
-                                <h2 className="text-3xl font-bold mb-2">{settings.appName || 'ABSEN DIGITAL ESKUL SEKOLAH'}</h2>
-                                <p className="text-white/80 text-sm italic">Platform Absensi Digital Modern.</p>
+                        {/* Area Visual Login (Sisi Kiri) */}
+                        <div 
+                            className="md:w-1/2 h-48 md:h-auto bg-cover bg-center flex flex-col items-center justify-center p-8 relative overflow-hidden"
+                            style={{ backgroundImage: settings.loginCardImage ? `url(${settings.loginCardImage})` : 'none' }}
+                        >
+                            {/* Overlay Gradasi agar teks tetap terbaca */}
+                            <div className={`absolute inset-0 z-0 bg-gradient-to-t ${theme.gradient} ${settings.loginCardImage ? 'opacity-60' : 'opacity-100'}`}></div>
+                            
+                            <div className="text-white text-center relative z-10">
+                                <h2 className="text-3xl font-bold mb-2 drop-shadow-lg">{settings.appName || 'ABSEN DIGITAL ESKUL SEKOLAH'}</h2>
+                                <p className="text-white/80 text-sm italic drop-shadow-md">Platform Absensi Digital Modern.</p>
                             </div>
                         </div>
+
+                        {/* Area Form Login (Sisi Kanan) */}
                         <div className="md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
                              <h1 className="text-2xl font-bold text-gray-800 mb-6">Login Panel</h1>
                              <form onSubmit={handleSubmit} className="space-y-4">
@@ -310,7 +316,6 @@
 
             const handleSubmit = (e) => {
                 e.preventDefault();
-                // Kirim form dan isEdit flag secara eksplisit
                 onAdd(form, isEdit);
                 resetForm();
             };
@@ -321,7 +326,7 @@
             };
 
             const startEdit = (s) => {
-                setForm({ ...s }); // Clone object untuk menghindari mutasi referensi
+                setForm({ ...s });
                 setIsEdit(true);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             };
@@ -390,9 +395,6 @@
                                         </td>
                                     </tr>
                                 ))}
-                                {students.length === 0 && (
-                                    <tr><td colSpan="2" className="p-10 text-center text-gray-400 italic">Belum ada data anggota.</td></tr>
-                                )}
                             </tbody>
                         </table>
                     </div>
@@ -553,7 +555,7 @@
                                 </select>
                             </div>
                             <div><label className="text-[10px] font-bold text-gray-400 uppercase">URL Logo Bulat (Side Nav)</label><input value={local.logoUrl} onChange={e => setLocal({...local, logoUrl: e.target.value})} className="w-full border rounded p-2 mt-1" placeholder="https://..." /></div>
-                            <div><label className="text-[10px] font-bold text-gray-400 uppercase">URL Gambar Login Card (Tengah)</label><input value={local.loginCardImage} onChange={e => setLocal({...local, loginCardImage: e.target.value})} className="w-full border rounded p-2 mt-1" placeholder="https://..." /></div>
+                            <div><label className="text-[10px] font-bold text-gray-400 uppercase">URL Gambar Kartu Login (Kiri)</label><input value={local.loginCardImage} onChange={e => setLocal({...local, loginCardImage: e.target.value})} className="w-full border rounded p-2 mt-1" placeholder="https://..." /></div>
                             <div className="md:col-span-2"><label className="text-[10px] font-bold text-gray-400 uppercase">URL Background Halaman Login</label><input value={local.loginBg} onChange={e => setLocal({...local, loginBg: e.target.value})} className="w-full border rounded p-2 mt-1" placeholder="https://..." /></div>
                         </div>
                         <button onClick={() => onUpdateSettings(local)} className={`mt-6 ${theme.primary} text-white px-6 py-2 rounded-lg font-bold shadow-lg`}>Simpan</button>
@@ -586,10 +588,6 @@
                 </div>
             );
         };
-
-        // =================================================================================
-        // MAIN APP LOGIC
-        // =================================================================================
 
         const App = () => {
             const [isLoggedIn, setIsLoggedIn] = useState(false);
